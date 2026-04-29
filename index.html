@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogisBill Pro — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0f1e;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.05) 1px,transparent 1px);background-size:50px 50px;z-index:0}
+.bg-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0}
+.login-container{position:relative;z-index:1;width:100%;max-width:440px;padding:20px}
+.logo-area{text-align:center;margin-bottom:40px}
+.logo-icon{width:72px;height:72px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin-bottom:16px;box-shadow:0 0 40px rgba(59,130,246,0.4)}
+.logo-area h1{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.logo-area p{color:#64748b;font-size:14px;margin-top:4px}
+.card{background:rgba(15,23,42,0.8);border:1px solid rgba(59,130,246,0.2);border-radius:20px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 25px 50px rgba(0,0,0,0.5)}
+.card h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
+.card .subtitle{color:#64748b;font-size:14px;margin-bottom:32px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:8px}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#475569;font-size:15px}
+.form-group input{width:100%;background:#0f172a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px 12px 42px;color:#fff;font-size:15px;font-family:'Inter',sans-serif;transition:border-color 0.2s,box-shadow 0.2s;outline:none}
+.form-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+.form-group input::placeholder{color:#334155}
+.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(59,130,246,0.4)}
+.btn-login:disabled{opacity:0.5;cursor:not-allowed}
+.error-msg{color:#f87171;font-size:13px;margin-top:12px;text-align:center;display:none}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="login-container">
+  <div class="logo-area">
+    <div class="logo-icon"><i class="fas fa-truck-fast"></i></div>
+    <h1>LogisBill Pro</h1>
+    <p>Logistics Billing & Invoice Management</p>
+  </div>
+  <div class="card">
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in to your dashboard</p>
+    
+    <div class="form-group">
+      <label>Username</label>
+      <div class="input-wrap">
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" placeholder="Enter username">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="Enter password">
+      </div>
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="doLogin()">
+      <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+    </button>
+    
+    <p class="error-msg" id="error-msg">Invalid username or password</p>
+  </div>
+</div>
+
+<script type="module">
+import { db } from './js/db.js';
+
+window.doLogin = async function() {
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value.trim();
+    const btn = document.getElementById('btn-login');
+    const em = document.getElementById('error-msg');
+
+    if(!u || !p) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+
+    try {
+        const allUsers = await db.getAppUsers();
+        let userData = allUsers.find(user => user.username === u);
+
+        // Default Admin Fallback (if absolutely nothing exists)
+        if (!userData && u === 'admin' && p === 'admin123') {
+            userData = { username: 'admin', password: 'admin123', role: 'admin' };
+        }
+
+        if (userData && userData.password === p) {
+            sessionStorage.setItem('finsight_session', JSON.stringify({
+                username: userData.username,
+                role: userData.role,
+                loginTime: Date.now()
+            }));
+            window.location.href = 'app.html';
+        } else {
+            throw new Error("Invalid credentials");
+        }
+    } catch (err) {
+        console.error("Login error:", err);
+        em.style.display = 'block';
+        setTimeout(() => em.style.display = 'none', 3000);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Sign In';
+    }
+};
+
+document.addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
+if(sessionStorage.getItem('finsight_session')) window.location.href = 'app.html';
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+--- SE-2526-043.pdf ---
+SHIVANI ENTERPRISES  
+State Code: 33   
+GSTIN:  33AISPG4898G1ZR  
+PAN Number:  AISPG4898G  Tax Invoice  
+ 
+NO. 1/4 PILLAYAR KOIL STREET, 
+PARIVAKKAM  
+CHENNAI – 600056.  
+TAMIL NADU, INDIA.  
+MOBILE: +91 9841399206/ 9444457926  
+MAIL ID :  shivanienterprises036@gmail.com  
+SHIVANIENTERPRISES036@GMAIL.COM   
+     NOTES:  
+1. Payments  should  be made  in favour  of SHIVANI  ENTERPRISES  
+2. Payments  are requested  to be made  within 15 working days after the receipt of invoice.  Bill To,  
+ASIAN MACHINE TOOL CORPORATION PRIVATE LTD  
+GATE NO 1239 , FLAT NO 3, MULSHI VAIBHAV, 
+PIRANGUT TAL, MULSHI DISTRICT, PUNE,  
+MAHARASHTRA, 412108  
+ 
+State  Name:  MAHARASHTRA  
+State Code: 27 
+GSTIN: 27AAKCA9829L1ZY  Invoice  No: SE-2526 -043          
+Invoice Date: 03/02/202 6 
+Invoice  Period:  01/01/202 6 to 31/01/202 6         
+SAC No: 9968  
+Description of service:  Courier  service    
+Place of Supply: Pune
+ 
+ 
+ 
+ 
+Sl No. PARTICULARS  RATE (%)  AMT  (RS)  
+1 COURIER SERVICE   
+6,926.00 
+2 FUEL SURCHARGE  20% 
+1,385.20 
+3 IGST @ 18% 18% 
+1,496.02 
+4 ROUND OFF   
+-0.22 
+ TOTAL INVOICE VALUE   9,807.00 
+Net Amount in words:  
+RUPEES NINE  THOUSAND EIGHT  HUNDRED AND SEVEN ONLY   
+Tax subject to reverse charge  NO 
+ 
+ 
+BANK DETAILS:          For SHIVANI  ENTERPRISES  
+ 
+BANK NAME   :  BANK OF BARODA  
+BRANCH NAME  :  NATHAMEDU BRANCH  
+BANK A/C NO  :  69640200001348  
+IFSC CODE   :  BARB0VJNAME (5th Character - Zero)  
+Authorized  Signat ory
+--- PAGE BREAK ---
+SHIVANI ENTERPRISES  
+State Code: 33   
+GSTIN:  33AISPG4898G1ZR  
+PAN Number:  AISPG4898G  Consignment Summary  Report  
+Report  
+NO. 1/4 PILLAYAR KOIL STREET, 
+PARIVAKKAM  
+CHENNAI – 600056.  
+TAMIL NADU, INDIA.  
+MOBILE: +91 9841399206/ 9444457926  
+MAIL ID : shivanienterprises036@gmail.com 
+SHIVANIENTERPRISES036@GMAIL.COM   
+ Statement for the period of January  2026 
+ 
+*Includes Risk Surcharges – 0.1% of the invoice value.  
+Manifest Date  Consignment Number  Shipment Charges  Risk Surcharge  Total Amount  
+03-01-2026 D2004501301  ₹ 2,940 .00 ₹ 126.00 ₹ 3066.00 
+ 
+ 
+ 
+ 
+For SHIVANI  ENTERPRISES  
+ 
+ 
+ 
+Authorized Signatory  Manifest Date  Consignment 
+Number  Destination  Company Name  Pincode  Dox 
+Type Weight 
+(Kg) Amount  
+03-01-2026 C55904257  PUNE  Asian Machine Tool Corporation  412108  N 2.14 ₹ 395.00  
+03-01-2026 D2004501301 * MYSORE  LGP Forge Ltd.  570016  N 42.00  ₹ 3,066.00 
+06-01-2026 D2006252033  PUNE  Asian Machine Tool Corporation  412108  N 14.30  ₹ 1,275.00  
+06-01-2026 D2006252040  TRICHY  MM Forging Ltd.  621316  N 10.00  ₹ 500.00  
+12-01-2026 C56432560  KANCHIPURAM  Sakura Autoparts India Pvt. Ltd.  631604  N 2.43 ₹ 200.00  
+13-01-2026 D2006252109  PUNE  Asian Machine Tool Corporation  412108  N 3.34 ₹ 340.00  
+20-01-2026 C48860029  PUNE  Asian Machine Tool Corporation  412108  D 0.10 ₹ 95.00  
+20-01-2026 D2006308560  PONDICHERRY  Sundaram Fasterners Ltd.  605110  N 8.50 ₹ 450.00  
+21-01-2026 C56484297  GUMMIDIPONDI  Tivolt Electric Vehicles Pvt. Ltd.  601206  N 1.34 ₹ 130.00  
+24-01-2026 C56484301  PUNE  Asian Machine Tool Corporation  412108  N 1.42 ₹ 245.00  
+29-01-2026 V3500946198  TRICHY  MM Forging Ltd.  621316  N 0.50 ₹ 60.00  
+31-01-2026 C56484320  PUNE  Asian Machine Tool Corporation  412108  N 0.90 ₹ 170.00  
+  
+TOTAL        
+₹6,926.00 
+--- PAGE BREAK ---
+
+
+--- SE-26-6874_test_logistics_pvt_ltd.pdf ---
+SHIVANI ENTERPRISES
+NO. 1/4 PILLAYAR KOIL STREET, PARIVAKKAM, CHENNAI - 600056
+MOBILE: +91 9841399206 / 9444457926 | EMAIL: shivanienterprises036@gmail.com
+GSTIN: 33AISPG4898G1ZR TAX INVOICE State Code: 33
+Bill To:
+TEST LOGISTICS PVT LTD
+No. 54A Mint Street, Parrys, Chennai-600001.
+State Name: TAMIL NADU
+State Code: 33
+GSTIN: 33AISPG4989G1ZRInvoice No: SE-26-6874
+Invoice Date: 2026-04-27
+Invoice Period: 01/04/2026 to 30/04/2026
+SAC No: 9968
+Service: Courier Service
+Place of Supply: TAMIL NADU
+Sl No. PARTICULARS RATE (%) AMT (RS)
+1 COURIER SERVICE 2690.00
+2 FUEL SURCHARGE 10% 269.00
+3 CGST @ 9% 9% 266.31
+4 SGST @ 9% 9% 266.31
+5 ROUND OFF 0.38
+TOTAL INVOICE VALUE 3492.00
+Net Amount in words: RUPEES THREE THOUSAND FOUR HUNDRED AND NINETY TWO ONLY ONLY
+Tax subject to reverse charge: NO
+Terms and Conditions:
+1. All payments should be made by Cheque/DD in favor of 'SHIVANI ENTERPRISES'
+2. Payment to be made within 15 days from the date of invoice.
+3. Interest @ 24% p.a. will be charged on delayed payments.
+4. Subject to Chennai Jurisdiction.
+BANK DETAILS:
+BANK NAME: BANK OF BARODA
+BRANCH: NATHAMEDU BRANCH
+A/C NO: 69640200001348
+IFSC CODE: BARB0VJNAMEFor SHIVANI ENTERPRISES
+Authorized Signatory
+--- PAGE BREAK ---
+ANNEXURE - CONSIGNMENT DETAILS
+Invoice No: SE-26-6874
+Company: TEST LOGISTICS PVT LTD
+Sl No Date AWB No Receiver Pincode Zone Service Weight Courier Chg
+1 2026-04-27 123456790 Asian 600018 LOCAL Express 0.5 kg 70.00
+2 2026-04-27 Asian 500018 ZONAL Express 1.2 kg 240.00
+3 46113 C12345678 600018 LOCAL Express 0.1 kg 50.00
+4 46114 C12345679 641014 REGIONAL Express 0.5 kg 100.00
+5 46115 D1200067890 629601 REGIONAL Surface 1.34 kg 210.00
+6 46116 D1200067891 500018 ZONAL Express 2.35 kg 360.00
+7 46117 V1200067892 560001 ZONAL Premium 0.76 kg 550.00
+8 2026-04-02 c123456 Asian Machine 500018 ZONAL Express 1.2 kg 240.00
+9 2026-04-27 124568556 asian machine 500015 ZONAL Express 1.2 kg 240.00
+10 2026-04-02 154566589 asian machine 500015 ZONAL Express 0.6 kg 180.00
+11 2026-04-27 1567996524 Sanco Enterprises 500035 ZONAL Air Cargo 1 kg 450.00
+ TOTAL 2690.00
+--- PAGE BREAK ---
