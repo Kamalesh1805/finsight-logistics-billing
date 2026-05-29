@@ -85,7 +85,12 @@ window.doLogin = async function() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
 
     try {
-        const allUsers = await db.getAppUsers();
+        let allUsers = [];
+        try {
+            allUsers = await db.getAppUsers();
+        } catch (e) {
+            console.warn("DB read failed (likely first-time setup or rules), using fallback:", e);
+        }
         let userData = allUsers.find(user => user.username === u);
 
         // Default Admin Fallback (if absolutely nothing exists)
