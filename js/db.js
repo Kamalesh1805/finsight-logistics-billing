@@ -68,8 +68,13 @@ export const db = {
     // User Management
     getAppUsers: async () => {
         if (!isCloudEnabled) return getLocalDb().users;
-        const querySnapshot = await getDocs(collection(firestore, "app_users"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "app_users"));
+            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+            console.warn("Firestore error (Users), falling back to local:", e);
+            return getLocalDb().users;
+        }
     },
     saveAppUser: async (userData) => {
         if (!isCloudEnabled) {
@@ -95,8 +100,13 @@ export const db = {
     // Companies
     getCompanies: async () => {
         if (!isCloudEnabled) return getLocalDb().companies;
-        const querySnapshot = await getDocs(collection(firestore, "companies"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "companies"));
+            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+            console.warn("Firestore error (Companies), falling back to local:", e);
+            return getLocalDb().companies;
+        }
     },
     saveCompany: async (company) => {
         if (!isCloudEnabled) {
@@ -126,21 +136,36 @@ export const db = {
     },
     getCompanyById: async (id) => {
         if (!isCloudEnabled) return getLocalDb().companies.find(c => c.id === id);
-        const docSnap = await getDoc(doc(firestore, "companies", id));
-        return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+        try {
+            const docSnap = await getDoc(doc(firestore, "companies", id));
+            return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+        } catch (e) {
+            console.warn("Firestore error, falling back to local:", e);
+            return getLocalDb().companies.find(c => c.id === id);
+        }
     },
 
     // Rate Cards
     getRateCards: async () => {
         if (!isCloudEnabled) return getLocalDb().rateCards;
-        const querySnapshot = await getDocs(collection(firestore, "rateCards"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "rateCards"));
+            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+            console.warn("Firestore error, falling back to local:", e);
+            return getLocalDb().rateCards;
+        }
     },
     getRateCardByCompanyId: async (companyId) => {
         if (!isCloudEnabled) return getLocalDb().rateCards.find(rc => rc.companyId === companyId);
-        const q = query(collection(firestore, "rateCards"), where("companyId", "==", companyId));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.empty ? null : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+        try {
+            const q = query(collection(firestore, "rateCards"), where("companyId", "==", companyId));
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.empty ? null : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+        } catch (e) {
+            console.warn("Firestore error, falling back to local:", e);
+            return getLocalDb().rateCards.find(rc => rc.companyId === companyId);
+        }
     },
     saveRateCard: async (rateCard) => {
         if (!isCloudEnabled) {
@@ -165,8 +190,13 @@ export const db = {
     // Shipments
     getShipments: async () => {
         if (!isCloudEnabled) return getLocalDb().shipments || [];
-        const querySnapshot = await getDocs(collection(firestore, "shipments"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "shipments"));
+            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+            console.warn("Firestore error, falling back to local:", e);
+            return getLocalDb().shipments || [];
+        }
     },
     saveShipment: async (shipment) => {
         if (!isCloudEnabled) {
@@ -203,8 +233,13 @@ export const db = {
     // Invoices
     getInvoices: async () => {
         if (!isCloudEnabled) return getLocalDb().invoices || [];
-        const querySnapshot = await getDocs(collection(firestore, "invoices"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "invoices"));
+            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) {
+            console.warn("Firestore error, falling back to local:", e);
+            return getLocalDb().invoices || [];
+        }
     },
     saveInvoice: async (invoice) => {
         if (!isCloudEnabled) {
@@ -223,6 +258,25 @@ export const db = {
         await setDoc(doc(firestore, "invoices", id), { ...invoice, id });
         return id;
     },
+
+    // Migration Helper
+    migrateLocalToCloud: async () => {
+        if (!isCloudEnabled) return;
+        const local = getLocalDb();
+        if (!local || !local.users || local.users.length === 0) return;
+        
+        console.log("Migrating local data to cloud...");
+        try {
+            for (const user of local.users) await setDoc(doc(firestore, "app_users", user.username), user);
+            for (const comp of local.companies) await setDoc(doc(firestore, "companies", comp.id), comp);
+            for (const rate of local.rateCards) await setDoc(doc(firestore, "rateCards", rate.id), rate);
+            for (const ship of local.shipments) await setDoc(doc(firestore, "shipments", ship.id), ship);
+            for (const inv of local.invoices) await setDoc(doc(firestore, "invoices", inv.id), inv);
+            console.log("Migration complete!");
+        } catch (e) {
+            console.error("Migration failed. Ensure Firestore rules are unlocked:", e);
+        }
+    }
     deleteInvoice: async (id) => {
         const invoices = await db.getInvoices();
         const inv = invoices.find(i => i.id === id);

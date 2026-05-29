@@ -520,9 +520,14 @@
             <a class="nav-item" onclick="switchView('invoices', this)">
                 <i class="fas fa-receipt"></i> Invoices
             </a>
-            <a class="nav-item" onclick="switchView('analytics', this)">
+            <a href="#" onclick="switchView('analytics')" id="nav-analytics" class="nav-item">
                 <i class="fas fa-chart-pie"></i> Analytics
             </a>
+            <div style="margin-top: 40px; padding: 0 20px;">
+                <button onclick="window.migrateData()" style="width:100%; padding:10px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="fas fa-cloud-upload-alt"></i> Push to Cloud
+                </button>
+            </div>
             <div style="flex-grow: 1;"></div>
             <a class="nav-item" onclick="switchView('settings', this)">
                 <i class="fas fa-gear"></i> Settings

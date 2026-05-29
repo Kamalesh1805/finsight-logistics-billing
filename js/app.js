@@ -51,6 +51,25 @@ window.logout = function() {
     window.location.href = 'index.html';
 };
 
+window.migrateData = async function() {
+    try {
+        const btn = document.querySelector('button[onclick="window.migrateData()"]');
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pushing...';
+            btn.disabled = true;
+        }
+        await db.migrateLocalToCloud();
+        alert("Data successfully pushed to the Cloud Database!");
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Done';
+            btn.style.background = '#059669';
+        }
+    } catch (err) {
+        alert("Failed to push data. Please ensure Firebase Firestore Rules are unlocked.");
+        console.error(err);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Dashboard as active view
     const session = JSON.parse(sessionStorage.getItem('finsight_session'));
