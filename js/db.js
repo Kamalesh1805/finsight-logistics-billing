@@ -276,7 +276,7 @@ export const db = {
         } catch (e) {
             console.error("Migration failed. Ensure Firestore rules are unlocked:", e);
         }
-    }
+    },
     deleteInvoice: async (id) => {
         const invoices = await db.getInvoices();
         const inv = invoices.find(i => i.id === id);
