@@ -230,6 +230,11 @@ export async function renderInvoicesView() {
             await generateMonthlyInvoicePDF(currentComp, currentPending, currentTotals, currentInvDate, currentPeriodFrom, currentPeriodTo, currentInvNo);
         }
 
+        // Web View Preview
+        if (target.id === 'btn-preview-webview') {
+            window.openInvoiceWebview(currentComp, currentPending, currentTotals, currentInvDate, currentPeriodFrom, currentPeriodTo, currentInvNo);
+        }
+
         // Delete Shipments from Preview
         if (target.classList.contains('btn-delete-preview-shipment')) {
             const id = target.getAttribute('data-id');
@@ -364,7 +369,7 @@ export async function renderInvoicesView() {
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;"><span>Tax:</span><span>₹ ${(grandTotalExact - subtotal).toFixed(2)}</span></div>
                     <div style="display:flex; justify-content:space-between; margin-bottom:30px; font-size:18px; font-weight:bold; color:var(--primary);"><span>Total:</span><span>₹ ${grandTotalRounded.toFixed(2)}</span></div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <button onclick="window.openInvoiceWebview(currentComp, currentPending, currentTotals, currentInvDate, currentPeriodFrom, currentPeriodTo, currentInvNo)" class="btn-primary" style="width:100%; justify-content:center; background:var(--surface-light);"><i class="fas fa-eye"></i> Web View</button>
+                        <button id="btn-preview-webview" class="btn-primary" style="width:100%; justify-content:center; background:var(--surface-light);"><i class="fas fa-eye"></i> Web View</button>
                         <button id="btn-generate-pdf" class="btn-primary" style="width:100%; justify-content:center;"><i class="fas fa-file-pdf"></i> PDF</button>
                     </div>
                 </div>
