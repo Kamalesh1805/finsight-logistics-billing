@@ -238,6 +238,18 @@ export async function renderInvoicesView() {
                 await handlePreview();
             }
         }
+
+        // Delete ALL pending consignments
+        if (target.id === 'btn-delete-all-pending') {
+            if (confirm("Are you sure you want to delete ALL pending consignments for this company? This cannot be undone.")) {
+                if(currentPending && currentPending.length > 0) {
+                    for(const s of currentPending) {
+                        await db.deleteShipment(s.id);
+                    }
+                    await handlePreview();
+                }
+            }
+        }
     });
     }
 
@@ -312,7 +324,12 @@ export async function renderInvoicesView() {
         let previewHtml = `
             <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
                 <div class="glass-panel">
-                    <h3 style="margin-bottom:15px;">Preview: ${currentInvNo}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 style="margin:0;">Preview: ${currentInvNo}</h3>
+                        <button id="btn-delete-all-pending" class="btn-primary" style="background:var(--danger); padding:6px 12px; font-size:12px;">
+                            <i class="fas fa-trash-alt"></i> Delete All
+                        </button>
+                    </div>
                     <div style="max-height:400px; overflow-y:auto; font-size:13px;">
                         <table style="width:100%; border-collapse:collapse;">
                             <thead>
@@ -501,9 +518,10 @@ async function generateMonthlyInvoicePDF(comp, shipments, totals, invDate, perio
 
         const annexBody = shipments.map(s => {
             const pinData = db.getPincode(s.destPincode);
+            const isRisk = (s.riskSurcharge || 0) > 0;
             const row = [
                 s.date, 
-                s.awb, 
+                s.awb + (isRisk ? '*' : ''), 
                 (pinData && pinData.district ? pinData.district : 'LOCAL').toUpperCase(), 
                 s.serviceType
             ];
@@ -532,6 +550,31 @@ async function generateMonthlyInvoicePDF(comp, shipments, totals, invDate, perio
         doc.setFontSize(10);
         doc.text("TOTAL", 150, finalY2 + 8);
         doc.text((totals.sumBase + totals.sumDocket + totals.sumRisk).toFixed(2), 196, finalY2 + 8, { align: "right" });
+
+        // --- Risk Surcharge Breakup Table ---
+        const riskShipments = shipments.filter(s => (s.riskSurcharge || 0) > 0);
+        if (riskShipments.length > 0) {
+            doc.setFont("helvetica", "bold");
+            doc.text("* Includes Risk Surcharge for high value consignments", 14, finalY2 + 20);
+            const riskHead = [['Manifest Date', 'Consignment Number', 'Shipment Charges', 'Risk Surcharge', 'Total Amount']];
+            const riskBody = riskShipments.map(s => [
+                s.date,
+                s.awb,
+                ((s.baseCharge || 0) + (s.docketCharge || 0)).toFixed(2),
+                (s.riskSurcharge || 0).toFixed(2),
+                ((s.baseCharge || 0) + (s.docketCharge || 0) + (s.riskSurcharge || 0)).toFixed(2)
+            ]);
+
+            doc.autoTable({
+                startY: finalY2 + 25,
+                head: riskHead,
+                body: riskBody,
+                theme: 'grid',
+                styles: { fontSize: 7 },
+                headStyles: { fillColor: [240, 240, 240], textColor: 0 },
+                columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } }
+            });
+        }
 
         const cleanInv = invoiceNumber.replace(/[^a-z0-9]/gi, '_');
         doc.save(`${cleanInv}.pdf`);
@@ -712,10 +755,11 @@ window.openInvoiceWebview = function(comp, shipments, totals, invDate, periodFro
                     <tbody>
                         ${shipments.map(s => {
                             const pinData = db.getPincode(s.destPincode);
+                            const isRisk = (s.riskSurcharge || 0) > 0;
                             return `
                             <tr>
                                 <td>${s.date}</td>
-                                <td>${s.awb}</td>
+                                <td>${s.awb}${isRisk ? '*' : ''}</td>
                                 <td>${(pinData?.district || 'LOCAL').toUpperCase()}</td>
                                 <td>${s.serviceType}</td>
                                 ${hasReceiver ? `<td>${s.receiver || '-'}</td>` : ''}
@@ -731,6 +775,32 @@ window.openInvoiceWebview = function(comp, shipments, totals, invDate, periodFro
                         </tr>
                     </tbody>
                 </table>
+
+                ${shipments.filter(s => (s.riskSurcharge || 0) > 0).length > 0 ? `
+                    <h3 style="margin-top:30px;">* Includes Risk Surcharge for high value consignments</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Manifest Date</th>
+                                <th>Consignment Number</th>
+                                <th style="text-align:right">Shipment Charges</th>
+                                <th style="text-align:right">Risk Surcharge</th>
+                                <th style="text-align:right">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${shipments.filter(s => (s.riskSurcharge || 0) > 0).map(s => `
+                                <tr>
+                                    <td>${s.date}</td>
+                                    <td>${s.awb}</td>
+                                    <td style="text-align:right">${((s.baseCharge || 0) + (s.docketCharge || 0)).toFixed(2)}</td>
+                                    <td style="text-align:right">${(s.riskSurcharge || 0).toFixed(2)}</td>
+                                    <td style="text-align:right">${((s.baseCharge || 0) + (s.docketCharge || 0) + (s.riskSurcharge || 0)).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : ''}
             </div>
         </body>
         </html>

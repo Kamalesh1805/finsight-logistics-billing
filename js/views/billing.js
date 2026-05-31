@@ -344,27 +344,55 @@ export async function renderBillingView() {
                 
                 let successCount = 0; let errorCount = 0;
                 const shipmentsToSave = [];
+                const errorsList = [];
+                let rowNum = 1;
 
                 for (const row of rows) {
-                    let dDate = (row.Date instanceof Date) ? row.Date.toISOString().split('T')[0] : (row.Date || new Date().toISOString().split('T')[0]);
-                    const compCode = String(row.CompanyCode || '').trim().toUpperCase();
-                    const sTypeRaw = String(row.ServiceType || '').toLowerCase().trim();
+                    rowNum++;
+                    let dDate;
+                    const rawDate = row.Date || row.date || row.DATE || '';
+                    if (rawDate instanceof Date) {
+                        const d = rawDate;
+                        dDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    } else {
+                        dDate = rawDate || new Date().toISOString().split('T')[0];
+                    }
+                    
+                    const compCodeRaw = row.CompanyCode || row['Company Code'] || row['company code'] || row.COMPANYCODE || '';
+                    const compCode = String(compCodeRaw).trim().toUpperCase();
+                    
+                    const sTypeRawRaw = row.ServiceType || row['Service Type'] || row['service type'] || row.SERVICETYPE || '';
+                    const sTypeRaw = String(sTypeRawRaw).toLowerCase().trim();
                     const sType = ['express','surface','aircargo','premium'].includes(sTypeRaw) ? (sTypeRaw==='aircargo'?'airCargo':sTypeRaw) : 'express';
-                    const weight = Number(row.Weight) || 0;
-                    const invVal = Number(row.InvoiceValue) || 0;
-                    const rType = String(row.RiskType || 'NONE').toUpperCase().trim();
+                    
+                    const weight = Number(row.Weight || row.weight || row.WEIGHT) || 0;
+                    const invVal = Number(row.InvoiceValue || row['Invoice Value'] || row.INVOICEVALUE) || 0;
+                    const rType = String(row.RiskType || row['Risk Type'] || 'NONE').toUpperCase().trim();
+                    
                     const comp = companies.find(c => (c.companyCode||'').toUpperCase() === compCode);
                     
-                    if (!comp) { errorCount++; continue; }
+                    if (!comp) { 
+                        errorCount++; 
+                        errorsList.push(`Row ${rowNum}: Company Code '${compCode}' not found.`);
+                        continue; 
+                    }
                     let zone = 'LOCAL';
-                    const pin = String(row.DestPincode || '');
+                    const pinRaw = row.DestPincode || row['Dest Pincode'] || row.Pincode || row.PINCODE || '';
+                    const pin = String(pinRaw);
                     if (pin.length >= 6) { const mapped = db.getPincode(pin); if (mapped) zone = mapped.zone; }
 
-                    const res = await calcBaseCharge(comp.id, zone, sType, weight, Number(row.ManualAmount)||0, invVal, rType);
-                    if (res.error) { errorCount++; continue; }
+                    const manualAmt = Number(row.ManualAmount || row['Manual Amount'] || row.MANUALAMOUNT) || 0;
+                    const res = await calcBaseCharge(comp.id, zone, sType, weight, manualAmt, invVal, rType);
+                    if (res.error) { 
+                        errorCount++; 
+                        errorsList.push(`Row ${rowNum}: Missing Rate Card for '${comp.name}' -> ${sType} to Zone ${zone}`);
+                        continue; 
+                    }
 
+                    const awbRaw = row.AWB || row.awb || row.Awb || '';
+                    const receiverRaw = row.ReceiverName || row['Receiver Name'] || row.Receiver || '';
                     shipmentsToSave.push({
-                        date: dDate, companyId: comp.id, awb: String(row.AWB || ''), receiver: String(row.ReceiverName || ''),
+                        date: dDate, companyId: comp.id, awb: String(awbRaw), receiver: String(receiverRaw),
                         destPincode: pin, zone: zone.toUpperCase(), serviceType: sType.charAt(0).toUpperCase() + sType.slice(1),
                         deadWeight: weight, invoiceValue: invVal, riskType: rType, baseCharge: res.baseCharge,
                         riskSurcharge: res.riskSurcharge || 0, docketCharge: res.docketCharge, status: 'Pending'
@@ -373,9 +401,18 @@ export async function renderBillingView() {
                 }
 
                 if (shipmentsToSave.length > 0) await db.saveShipments(shipmentsToSave);
+                
+                let errorHtml = '';
+                if (errorsList.length > 0) {
+                    errorHtml = `<div style="margin-top:10px; max-height:150px; overflow-y:auto; font-size:12px; color:var(--danger);">
+                        <strong>Errors:</strong><br/>${errorsList.join('<br/>')}
+                    </div>`;
+                }
+
                 document.getElementById('bulk-results').innerHTML = `<div style="background:var(--surface-light); padding:20px; border-radius:10px;">
                     <h4 style="color:var(--primary);">Upload Complete</h4>
-                    <p>${successCount} saved. ${errorCount} failed.</p>
+                    <p>${successCount} saved successfully. ${errorCount} failed.</p>
+                    ${errorHtml}
                 </div>`;
                 await renderRecentShipments();
             } catch(err) { alert("Error parsing Excel file."); console.error(err); }
@@ -404,7 +441,8 @@ export async function renderBillingView() {
                     }
                 }
             } else if (serviceType === 'surface' || serviceType === 'airCargo') {
-                const billableWeight = Math.max(weight, rates.minWeight || 0);
+                const roundedWeight = Math.ceil(weight);
+                const billableWeight = Math.max(roundedWeight, rates.minWeight || 0);
                 baseCharge = billableWeight * (rates.perKg || 0);
             } else if (serviceType === 'premium') {
                 if (weight <= 5) {
@@ -419,7 +457,8 @@ export async function renderBillingView() {
                         }
                     }
                 } else {
-                    const billableWeight = Math.max(weight, rates.minWeight || 0);
+                    const roundedWeight = Math.ceil(weight);
+                    const billableWeight = Math.max(roundedWeight, rates.minWeight || 0);
                     baseCharge = billableWeight * (rates.perKg || 0);
                 }
             }
