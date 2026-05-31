@@ -22,7 +22,7 @@ export async function renderBillingView() {
         return;
     }
 
-    const options = companies.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    const options = companies.map(c => `<option value="${c.id}">${c.name}${c.companyCode ? ` (${c.companyCode})` : ''}</option>`).join('');
 
     // Single Entry View
     html += `

@@ -38,7 +38,7 @@ export async function renderInvoicesView() {
     if (companies.length === 0) {
         html += `<div class="glass-panel"><p style="color:var(--text-muted);text-align:center;padding:40px;">No companies available.</p></div>`;
     } else {
-        const options = companies.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        const options = companies.map(c => `<option value="${c.id}">${c.name}${c.companyCode ? ` (${c.companyCode})` : ''}</option>`).join('');
         html += `
             <div class="glass-panel" style="margin-bottom:24px;">
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; align-items:flex-end;">

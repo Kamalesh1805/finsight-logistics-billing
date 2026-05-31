@@ -62,7 +62,7 @@ export async function renderRateCardsView() {
     }
 
     // Modal
-    let options = companies.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    let options = companies.map(c => `<option value="${c.id}">${c.name}${c.companyCode ? ` (${c.companyCode})` : ''}</option>`).join('');
     html += `
         <div id="ratecard-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); z-index:100; align-items:center; justify-content:center;">
             <div class="glass-panel" style="width:900px; max-width:95%; max-height:90vh; overflow-y:auto; padding:30px; position:relative;">
